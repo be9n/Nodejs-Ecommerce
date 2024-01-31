@@ -36,18 +36,22 @@ const errorHandlerMiddleware = (err, req, res, next) => {
 
     return res.status(StatusCodes.BAD_REQUEST).json({ error: { errors } });
   }
+
   if (err.code && err.code === 11000) {
-    customError.error = `Duplicate value entered for ${Object.keys(
-      err.keyValue
-    )} field, please choose another value`;
-    customError.statusCode = 400;
-  }
-  if (err.name === "CastError") {
-    customError.error = `No item found with id : ${err.value}`;
-    customError.statusCode = 404;
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      error: `Duplicate value entered for ${Object.keys(
+        err.keyValue
+      )} field, please choose another value`,
+    });
   }
 
-  return res.status(customError.statusCode).json({ error: customError.error });
+  if (err.name === "CastError") {
+    return res.status(StatusCodes.NOT_FOUND).json({
+      error: `No item found with id : ${err.value}`,
+    });
+  }
+
+  return res.status(customError.statusCode).json({ error: err.message });
 };
 
 module.exports = errorHandlerMiddleware;
