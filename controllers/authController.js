@@ -15,7 +15,7 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   const { email, password } = req.body;
 
-  let user = await User.findOne({ email }).select("+password");
+  let user = await User.findOne({ email });
   if (!user) {
     throw new CustomError.UnauthenticatedError("Invalid credentials");
   }

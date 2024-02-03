@@ -12,6 +12,10 @@ const connectDB = require("./db/connect");
 
 // routers
 const authRouter = require("./routes/authRouter");
+// admin routes
+const userRouter = require("./routes/admin/userRoutes");
+// user routes
+const profileRouter = require("./routes/user/profileRoutes");
 
 // middlewares
 const notFoundMiddleware = require("./middleware/not-found");
@@ -26,6 +30,10 @@ app.get("/api", (req, res) => {
 });
 
 app.use("/api/auth", authRouter);
+// admin router
+app.use("/api/admin/users", userRouter);
+// user router
+app.use("/api/profile", profileRouter);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);

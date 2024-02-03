@@ -20,7 +20,7 @@ const User = new mongoose.Schema({
   },
   password: {
     type: String,
-    select: false,
+    // select: false,
     required: [true, "Please provide the password"],
     minLength: [6, "The name should be at least 6 characters"],
   },
@@ -38,7 +38,7 @@ User.pre("save", async function () {
 });
 
 User.methods.comparePassword = async function (reqPassword) {
-  return await bcrypt.compare(reqPassword, this.password);
+  return bcrypt.compare(reqPassword, this.password);
 };
 
 User.set('toJSON', {

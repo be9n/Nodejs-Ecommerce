@@ -1,6 +1,7 @@
-module.exports = (schema) => async (req, res, next) => {
+module.exports = (schemaMaker) => async (req, res, next) => {
+  const schema = schemaMaker(req);
+
   const validated = await schema.validate(req.body, {
-    context: { req },
     abortEarly: false,
   });
 
