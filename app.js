@@ -13,9 +13,9 @@ const connectDB = require("./db/connect");
 // routers
 const authRouter = require("./routes/authRouter");
 // admin routes
-const userRouter = require("./routes/admin/userRoutes");
+const adminRoutes = require("./routes/admin/adminRoutes");
 // user routes
-const profileRouter = require("./routes/user/profileRoutes");
+const userRoutes = require("./routes/user/userRoutes");
 
 // middlewares
 const notFoundMiddleware = require("./middleware/not-found");
@@ -24,6 +24,7 @@ const errorHandlerMiddleware = require("./middleware/error-handler");
 app.use(morgan("dev"));
 app.use(cookieParser(process.env.JWT_SECRET_KEY));
 app.use(express.json());
+app.use(express.static('public'))
 
 app.get("/api", (req, res) => {
   res.send("e-commerce api");
@@ -31,9 +32,9 @@ app.get("/api", (req, res) => {
 
 app.use("/api/auth", authRouter);
 // admin router
-app.use("/api/admin/users", userRouter);
+app.use("/api/admin", adminRoutes);
 // user router
-app.use("/api/profile", profileRouter);
+app.use("/api", userRoutes);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);

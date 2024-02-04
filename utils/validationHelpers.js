@@ -1,8 +1,8 @@
-const unique = ({ key, modelName, ignoreId }) => {
-  return async (value, context) => {
+const unique = ({ modelName, ignoreId }) => {
+  return async function (value, context) {
     const Model = require(`../models/${modelName}`);
     let query = {
-      [key]: value,
+      [this.path]: value,
     };
 
     if (ignoreId) {

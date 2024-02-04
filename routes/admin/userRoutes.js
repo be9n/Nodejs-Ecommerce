@@ -5,11 +5,6 @@ const {
   getUser,
   deleteUser,
 } = require("../../controllers/admin/userController");
-const auth = require("../../middleware/authentication");
-const authorize = require("../../middleware/authorization");
-
-router.use(auth);
-router.use(authorize("admin"));
 
 router.get("/", getAllUsers);
 
