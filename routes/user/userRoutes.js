@@ -1,13 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const auth = require("../../middleware/authentication");
 
 const profileRouter = require("./profileRoutes");
 const productRoutes = require("./productRoutes");
+const reviewRoutes = require("./reviewRoutes");
 
 router.use("/products", productRoutes);
-
-router.use(auth);
+router.use("/products", reviewRoutes);
 
 router.use("/profile", profileRouter);
 

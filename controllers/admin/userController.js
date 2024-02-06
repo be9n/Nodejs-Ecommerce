@@ -20,10 +20,12 @@ exports.getUser = async (req, res) => {
 
 exports.deleteUser = async (req, res) => {
   const { id } = req.params;
-  const deleted = await User.findByIdAndDelete(id)
-  if (!deleted) {
+  const user = await User.findOne({_id: id})
+  if (!user) {
     throw new CustomError.NotFoundError('User not found')
   }
+
+  await user.deleteOne()
 
   res.status(200).json({ success: true });
 };

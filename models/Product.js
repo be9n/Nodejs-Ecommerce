@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const s3Service = require("../utils/s3Service");
 
 const ProductSchema = new mongoose.Schema(
   {
@@ -59,12 +60,27 @@ const ProductSchema = new mongoose.Schema(
       required: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
+
+ProductSchema.virtual("reviews", {
+  ref: "Review",
+  localField: "_id",
+  foreignField: "product",
+  justOne: false,
+});
 
 ProductSchema.methods.getImagePath = function () {
   const startIndex = this.image.indexOf("com/") + 4;
   return this.image.substring(startIndex);
 };
+
+ProductSchema.pre(["deleteOne", 'deleteMany'], { document: true }, async function (next) {
+  if (this.image) {
+    s3Service.deleteFile(this.getImagePath());
+  }
+
+  await this.model("Review").deleteMany({product: this._id});
+});
 
 module.exports = mongoose.model("Product", ProductSchema);

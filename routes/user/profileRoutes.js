@@ -1,4 +1,5 @@
 const express = require("express");
+const auth = require("../../middleware/authentication");
 const router = express.Router();
 const {
   showProfile,
@@ -10,6 +11,8 @@ const profileValidation = require("../../validations/user/profileValidation");
 const updatePasswordValidation = require("../../validations/user/updatePasswordValidation");
 
 const authorize = require("../../middleware/authorization");
+
+router.use(auth);
 
 router.use(authorize("admin", "buyer"));
 

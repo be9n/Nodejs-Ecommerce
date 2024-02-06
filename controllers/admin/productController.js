@@ -30,9 +30,8 @@ exports.updateProduct = async (req, res) => {
     req.body.image = image.Location;
   }
 
-  product = await Product.findOneAndUpdate({ _id: product._id }, req.body, {
-    new: true,
-  });
+  Object.assign(product, req.body);
+  await product.save();
 
   res.status(StatusCodes.OK).json(product);
 };
@@ -41,10 +40,6 @@ exports.deleteProduct = async (req, res) => {
   const product = await Product.findOne({ _id: req.params.id });
   if (!product) {
     throw new CustomError.NotFoundError("Product not found");
-  }
-
-  if (product.image) {
-    s3Service.deleteFile(product.getImagePath());
   }
 
   await product.deleteOne();

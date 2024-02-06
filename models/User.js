@@ -37,15 +37,19 @@ User.pre("save", async function () {
   }
 });
 
+User.pre(["deleteOne"], { document: true }, async function () {
+  await this.model("Product").deleteMany({ user: this._id });
+});
+
 User.methods.comparePassword = async function (reqPassword) {
   return bcrypt.compare(reqPassword, this.password);
 };
 
-User.set('toJSON', {
-  transform: function(doc, ret, opt) {
-      delete ret['password']
-      return ret
-  }
-})
+User.set("toJSON", {
+  transform: function (doc, ret, opt) {
+    delete ret["password"];
+    return ret;
+  },
+});
 
 module.exports = mongoose.model("User", User);
