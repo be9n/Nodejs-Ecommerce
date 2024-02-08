@@ -52,7 +52,11 @@ const ProductSchema = new mongoose.Schema(
     },
     averageRating: {
       type: Number,
-      default: 1,
+      default: 0,
+    },
+    numOfReviews: {
+      type: Number,
+      default: 0,
     },
     user: {
       type: mongoose.Types.ObjectId,
@@ -75,12 +79,16 @@ ProductSchema.methods.getImagePath = function () {
   return this.image.substring(startIndex);
 };
 
-ProductSchema.pre(["deleteOne", 'deleteMany'], { document: true }, async function (next) {
-  if (this.image) {
-    s3Service.deleteFile(this.getImagePath());
-  }
+ProductSchema.pre(
+  ["deleteOne", "deleteMany"],
+  { document: true },
+  async function (next) {
+    if (this.image) {
+      s3Service.deleteFile(this.getImagePath());
+    }
 
-  await this.model("Review").deleteMany({product: this._id});
-});
+    await this.model("Review").deleteMany({ product: this._id });
+  }
+);
 
 module.exports = mongoose.model("Product", ProductSchema);

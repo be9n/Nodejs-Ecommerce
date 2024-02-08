@@ -6,10 +6,7 @@ const { StatusCodes } = require("http-status-codes");
 
 exports.getAllReviews = async (req, res) => {
   const reviews = await Review.find({ product: req.params.productId }).populate(
-    [
-      { path: "product", select: "name company category price image" },
-      { path: "user", select: "name" },
-    ]
+    [{ path: "user", select: "name" }]
   );
 
   res.status(StatusCodes.OK).json(reviews);
@@ -18,17 +15,16 @@ exports.getAllReviews = async (req, res) => {
 exports.createReview = async (req, res) => {
   const { productId } = req.params;
 
-  const product = await Product.findOne({ _id: productId });
+  const product = await Product.findOne({ _id: productId }).populate({
+    path: "reviews",
+    match: { user: req.user._id },
+  });
+
   if (!product) {
     throw new CustomError.NotFoundError("Product is not found");
   }
 
-  const alreadySubmitted = await Review.findOne({
-    user: req.user._id,
-    product: productId,
-  });
-
-  if (alreadySubmitted) {
+  if (product.reviews.length > 0) {
     throw new CustomError.BadRequestError(
       "This user has made a review for this product before!"
     );

@@ -11,13 +11,13 @@ const auth = async (req, res, next) => {
   try {
     const payload = verifyJWT(accessToken);
 
-    const user = await User.findById(payload.userId);
+    const user = await User.findOne({ _id: payload.userId });
     if (!user) {
       throw new CustomError.UnauthenticatedError("Authentication Invalid");
     }
 
     req.user = user;
-    
+
     next();
   } catch (error) {
     throw new CustomError.UnauthenticatedError("Authentication Invalid");
